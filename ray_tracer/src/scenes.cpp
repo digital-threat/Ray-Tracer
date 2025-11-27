@@ -19,6 +19,10 @@ Scene Sandbox::MirrorScene()
 	scene.skyColor = glm::vec4(0.27f, 0.69f, 0.86f, 1.0f);
 	scene.skyTextureIndex = -1;
 
+	std::string skyTextureName = "pink_sunset_equirect.png";
+	TextureManager::Instance().LoadTexture("models", skyTextureName);
+	scene.skyTextureIndex = TextureManager::Instance().GetTextureCount() - 1;
+
 	MeshManager& meshManager = MeshManager::Instance();
 	MeshHandle teapot = meshManager.LoadMesh("models\\teapot\\teapot.obj");
 	MeshHandle cube = meshManager.LoadMesh("models\\mirror\\mirror.obj");
