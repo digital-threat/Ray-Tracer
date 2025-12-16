@@ -283,7 +283,7 @@ void Sandbox::RenderRt(VkCommandBuffer cmd, FrameData& currentFrame)
 
 	DescriptorWriter writer;
 	writer.WriteTlas(0, &writeAS);
-	writer.WriteImage(1, mEngine.mColorTarget.imageView, nullptr, VK_IMAGE_LAYOUT_GENERAL, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+	writer.WriteImage(1, mEngine.mColorTarget.imageView, VK_NULL_HANDLE, VK_IMAGE_LAYOUT_GENERAL, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 	writer.UpdateSet(mEngine.mDevice, rtSet);
 
 	UpdateRtSceneDescriptorSet(sceneSet, currentFrame);
