@@ -24,82 +24,24 @@ Scene Sandbox::MirrorScene()
 	scene.skyTextureIndex = TextureManager::Instance().GetTextureCount() - 1;
 
 	MeshManager& meshManager = MeshManager::Instance();
-	MeshHandle teapot = meshManager.LoadMesh("models\\teapot\\teapot.obj");
-	MeshHandle cube = meshManager.LoadMesh("models\\mirror\\mirror.obj");
-	MeshHandle plane = meshManager.LoadMesh("models\\plane\\plane.obj");
-	scene.meshes.push_back(teapot);
-	scene.meshes.push_back(cube);
-	scene.meshes.push_back(plane);
+	MeshHandle sibenik = meshManager.LoadMesh("models\\sibenik\\sibenik.obj");
+	scene.meshes.push_back(sibenik);
 
 	{
 		Entity entity = scene.coordinator.CreateEntity();
 
 		Name name;
-		name.name = "Teapot";
-		scene.coordinator.AddComponent<Name>(entity, name);
-
-		Transform transform;
-		transform.position = glm::vec3(0.0f, 0.5f, 0.0f);
-		transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-		transform.scale = 0.015f;
-		scene.coordinator.AddComponent<Transform>(entity, transform);
-
-		Renderer renderer;
-		renderer.meshHandle = teapot;
-		scene.coordinator.AddComponent<Renderer>(entity, renderer);
-	}
-
-	{
-		Entity entity = scene.coordinator.CreateEntity();
-
-		Name name;
-		name.name = "Plane";
+		name.name = "Sibenik";
 		scene.coordinator.AddComponent<Name>(entity, name);
 
 		Transform transform;
 		transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
 		transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-		transform.scale = 5.0f;
+		transform.scale = 0.1f;
 		scene.coordinator.AddComponent<Transform>(entity, transform);
 
 		Renderer renderer;
-		renderer.meshHandle = plane;
-		scene.coordinator.AddComponent<Renderer>(entity, renderer);
-	}
-
-	{
-		Entity entity = scene.coordinator.CreateEntity();
-
-		Name name;
-		name.name = "Mirror";
-		scene.coordinator.AddComponent<Name>(entity, name);
-
-		Transform transform;
-		transform.position = glm::vec3(0.0f, 2.0f, 3.0f);
-		transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-		transform.scale = 1.0f;
-		scene.coordinator.AddComponent<Transform>(entity, transform);
-
-		Renderer renderer;
-		renderer.meshHandle = cube;
-		scene.coordinator.AddComponent<Renderer>(entity, renderer);
-	}
-
-	{
-		Entity entity = scene.coordinator.CreateEntity();
-
-		Name name;
-		name.name = "Mirror";
-		scene.coordinator.AddComponent<Name>(entity, name);
-
-		Transform transform;
-		transform.position = glm::vec3(0.0f, 2.0f, -3.0f);
-		transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-		transform.scale = 1.0f;
-		scene.coordinator.AddComponent<Transform>(entity, transform);
-
-		Renderer renderer;
-		renderer.meshHandle = cube;
+		renderer.meshHandle = sibenik;
 		scene.coordinator.AddComponent<Renderer>(entity, renderer);
 	}
 

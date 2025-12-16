@@ -82,6 +82,14 @@ void main()
 
     vec3 BRDF = diffuse / M_PI;
 
+    if (material.illum == 6)
+    {
+        inPayload.rayOrigin = rayOrigin;
+        inPayload.weight *= vec3(1.0);
+        inPayload.done = 0;
+        return;
+    }
+
     inPayload.rayOrigin = rayOrigin;
     inPayload.rayDirection = rayDirection;
     inPayload.weight *= BRDF * cos_theta / p;
