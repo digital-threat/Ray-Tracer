@@ -43,4 +43,5 @@ struct RenderContext
 	RaytracingData raytracing;
 	float renderScale;
 	i32 samplesPerPixel;
+	u32 frame;
 };

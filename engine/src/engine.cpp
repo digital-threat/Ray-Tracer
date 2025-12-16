@@ -235,6 +235,10 @@ vkb::PhysicalDevice Engine::SelectPhysicalDevice(vkb::Instance& vkbInstance, VkS
 	rayTracingPipelineFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR;
 	rayTracingPipelineFeatures.rayTracingPipeline = VK_TRUE;
 
+	VkPhysicalDeviceShaderClockFeaturesKHR clockFeatures{};
+	clockFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CLOCK_FEATURES_KHR;
+	clockFeatures.shaderSubgroupClock = VK_TRUE;
+
 	vkb::PhysicalDeviceSelector selector(vkbInstance);
 	selector.set_surface(vkSurface);
 	selector.set_minimum_version(1, 3);
@@ -244,8 +248,10 @@ vkb::PhysicalDevice Engine::SelectPhysicalDevice(vkb::Instance& vkbInstance, VkS
 	selector.add_required_extension(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME);
 	selector.add_required_extension(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME);
 	selector.add_required_extension(VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME);
+	selector.add_required_extension(VK_KHR_SHADER_CLOCK_EXTENSION_NAME);
 	selector.add_required_extension_features(rayTracingPipelineFeatures);
 	selector.add_required_extension_features(accelerationStructureFeatures);
+	selector.add_required_extension_features(clockFeatures);
 
 	auto physicalDevice = selector.select();
 

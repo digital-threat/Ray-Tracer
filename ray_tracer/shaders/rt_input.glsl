@@ -5,6 +5,7 @@
 layout (push_constant) uniform PushConstants
 {
     uint samplesPerPixel;
+    uint frame;
 };
 
 layout (set = 0, binding = 0) uniform accelerationStructureEXT tlas;

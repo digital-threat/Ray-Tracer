@@ -8,6 +8,7 @@
 struct RtPushConstants
 {
 	u32 samplesPerPixel;
+	u32 frame;
 };
 
 void Sandbox::InitRt()
@@ -269,7 +270,6 @@ void Sandbox::UpdateRtSceneDescriptorSet(VkDescriptorSet sceneSet, FrameData& cu
 	writer.UpdateSet(mEngine.mDevice, sceneSet);
 }
 
-
 void Sandbox::RenderRt(VkCommandBuffer cmd, FrameData& currentFrame)
 {
 	VkDescriptorSet rtSet = currentFrame.descriptorAllocator.Allocate(mEngine.mDevice, mRtDescriptorLayout);
@@ -288,8 +288,28 @@ void Sandbox::RenderRt(VkCommandBuffer cmd, FrameData& currentFrame)
 
 	UpdateRtSceneDescriptorSet(sceneSet, currentFrame);
 
+	// TODO(Sergei): Find a better place for this!
+	{
+		static glm::mat4 oldMatrixV;
+		static float oldFov = 0;
+
+		CameraRenderData& camera = mRenderContext.camera;
+		glm::mat4 newMatrixV = glm::lookAt(camera.pos, camera.pos + camera.forward, camera.up);
+		float newFov = camera.fov;
+
+		if (oldMatrixV != newMatrixV || oldFov != newFov)
+		{
+			mRenderContext.frame = -1;
+			oldMatrixV = newMatrixV;
+			oldFov = newFov;
+		}
+
+		mRenderContext.frame++;
+	}
+
 	RtPushConstants pushConstants{};
 	pushConstants.samplesPerPixel = static_cast<u32>(mRenderContext.samplesPerPixel);
+	pushConstants.frame = mRenderContext.frame;
 
 	u32 width = mEngine.mColorTarget.extent.width;
 	u32 height = mEngine.mColorTarget.extent.height;

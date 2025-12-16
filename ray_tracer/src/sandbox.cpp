@@ -15,6 +15,7 @@ Sandbox::Sandbox(Engine& engine) : Application(engine)
 {
 	mRenderContext.renderScale = 1.0f;
 	mRenderContext.samplesPerPixel = 1;
+	mRenderContext.frame = 0;
 	isSimulating = true;
 	mCurrentScene = 0;
 }

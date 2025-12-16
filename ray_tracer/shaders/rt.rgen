@@ -2,6 +2,7 @@
 #extension GL_EXT_ray_tracing: require
 #extension GL_EXT_shader_explicit_arithmetic_types_int64: require
 #extension GL_EXT_scalar_block_layout: enable
+#extension GL_ARB_shader_clock : enable
 
 #include "rt_input.glsl"
 #include "rt_common.glsl"
@@ -15,9 +16,11 @@ void main()
     float tMin = 0.001f;
     float tMax = 10000.0f;
 
-    uint seed = tea(gl_LaunchIDEXT.y * gl_LaunchSizeEXT.x + gl_LaunchIDEXT.x, 42);
+    uint seed = tea(gl_LaunchIDEXT.y * gl_LaunchSizeEXT.x + gl_LaunchIDEXT.x, int(clockARB()));
 
     vec3 finalColor = vec3(0);
+    payload.weight = vec3(1);
+
     for (uint i = 0; i < samplesPerPixel; i++)
     {
         vec2 sampleLocation = i == 0 ? vec2(0.5f) : vec2(0.5f) + 0.375f * RandomGaussian(seed);
@@ -32,13 +35,11 @@ void main()
 
         payload.depth = 0;
         payload.color = vec3(0);
-        payload.attenuation = vec3(1.0f, 1.0f, 1.0f);
-        payload.done = 1;
+        payload.done = 0;
         payload.rayOrigin = origin.xyz;
         payload.rayDirection = direction.xyz;
 
-        vec3 color = vec3(0);
-        for (; ;)
+        for (; payload.depth < 10; payload.depth++)
         {
             traceRayEXT(tlas, // acceleration structure
                         flags, // rayFlags
@@ -53,22 +54,29 @@ void main()
                         0 // payload (location = 0)
             );
 
-            color += payload.color * payload.attenuation;
+            origin.xyz = payload.rayOrigin;
+            direction.xyz = payload.rayDirection;
 
-            payload.depth++;
-            if (payload.done == 1 || payload.depth >= 50)
+            finalColor += payload.color;
+            payload.color = vec3(0);
+
+            if (payload.done == 1)
             {
                 break;
             }
-
-            origin.xyz = payload.rayOrigin;
-            direction.xyz = payload.rayDirection;
-            payload.done = 1;
         }
-
-        finalColor += color;
     }
 
     finalColor = finalColor / samplesPerPixel;
-    imageStore(renderTarget, ivec2(gl_LaunchIDEXT.xy), vec4(finalColor, 1.0f));
+
+    if (frame > 0)
+    {
+        float a = 1.0f / float(frame + 1);
+        vec3 oldColor = imageLoad(renderTarget, ivec2(gl_LaunchIDEXT.xy)).xyz;
+        imageStore(renderTarget, ivec2(gl_LaunchIDEXT.xy), vec4(mix(oldColor, finalColor, a), 1.0f));
+    }
+    else
+    {
+        imageStore(renderTarget, ivec2(gl_LaunchIDEXT.xy), vec4(finalColor, 1.0f));
+    }
 }

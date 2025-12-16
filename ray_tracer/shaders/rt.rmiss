@@ -28,5 +28,8 @@ void main()
         color = skyColor.rgb;
     }
 
-    inPayload.color = color;
+    inPayload.color += inPayload.weight * color;
+
+    inPayload.depth = 100;
+    inPayload.done = 1;
 }
